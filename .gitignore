@@ -101,3 +101,7 @@ fabric_base.py
 lb01.xml
 file_transfer.py
 
+
+parse_xml\.py
+
+quick_start\.sh
