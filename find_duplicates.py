@@ -19,12 +19,15 @@ import subprocess
 import time
 import re
 
-# parse = CiscoConfParse(argv[1], syntax='junos', comment='!')
 parse = CiscoConfParse(argv[1], syntax='junos', comment='!')
 
-debug = argv[2]
 
-pprint("Script Debug is {0}".format(debug))
+try:
+    debug = argv[2]
+    pprint("Script Debug is {0}".format(debug))
+except:
+    pprint("You didn't configure any logging verbose, default will be False")
+    debug = False
 
 # f = open("/media/bassim/DATA/cisco-config",'w')
 #
