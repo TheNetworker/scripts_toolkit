@@ -4,10 +4,10 @@
 
 # Assumptions
 # 1- I'm searching for vrf instances only, not virtual-switch or any other instance-type
-# 2- VRF Interface has only one address, other addresses are automatically ignored (fixed in commit #)
-# 3- Use python 2.7.x not 3.x (it should work on both but I don't test it on 3 train)
+# 2- VRF Interface has only one address, other addresses are automatically ignored (fixed in commit #5ac3ab1)
+# 3- Use python 2.7.x not 3.x (it should work on both but I didn't test it on 3 train)
 # 4- remove "class-of-services{}" entire section from configuration
-# 5- remove " routing-instances " from interface descriptions
+# 5- remove " routing-instances " from descriptions
 
 
 from ciscoconfparse import CiscoConfParse
@@ -167,6 +167,10 @@ for ri in routing_instances:
         ri_vrfs.append(ri)
 
 last_instance = ri_vrfs[-1]
+
+script_logger(message="*Last Instances is {0}".format(last_instance), debug=debug,
+              indent=1)
+
 vrf_interfaces = []
 for index, instance in enumerate(ri_vrfs):
     print("\n")
@@ -181,6 +185,8 @@ for index, instance in enumerate(ri_vrfs):
         if "interface " in line:
             vrf_interfaces.append(line.split()[1])
 
+    script_logger(message="*VRF interfaces are {0}".format(vrf_interfaces), debug=debug,
+                  indent=2)
     vrf_interfaces = list(set(vrf_interfaces))
     clean_intfs = []
     for intf in vrf_interfaces:
@@ -192,6 +198,8 @@ for index, instance in enumerate(ri_vrfs):
     if len(vrf_interfaces) >= 1:
         try:
             all_addresses, vrf_duplicates = get_and_compare(instance, vrf_interfaces, 'vrf', all_addresses)
+            script_logger(message="*All_Addresses: {0}".format(all_addresses), debug=debug,
+                          indent=2)
         except:
             pass
 
@@ -199,6 +207,13 @@ for index, instance in enumerate(ri_vrfs):
             pprint("{0}: {1}".format(instance.strip(), vrf_duplicates))
 
         vrf_interfaces = []
-        if instance == last_instance:
-            pprint("Global Duplicates: {0}".format(
-                [item for item, count in collections.Counter(all_addresses).items() if count > 1]))
+        script_logger(message="*Last Instances is {0}".format(last_instance), debug=debug,
+                      indent=0)
+        script_logger(message="*Current Instances is {0}".format(instance), debug=debug,
+                      indent=0)
+
+    if instance == last_instance:
+        script_logger(message="*Current Instances is {0}".format(instance), debug=debug,
+                      indent=2)
+        pprint("Global Duplicates: {0}".format(
+            [item for item, count in collections.Counter(all_addresses).items() if count > 1]))
