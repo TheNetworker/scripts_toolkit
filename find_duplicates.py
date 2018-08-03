@@ -118,12 +118,12 @@ def get_and_compare(instance, interfaces, type, all_addresses):
                 if unit_re.search(line):
                     new_addresses = get_address(num, IFD_CONFIG)
                     addresses = addresses + new_addresses
-                    if "vpnmonitor" in instance and "5.119.81.205/30" in new_addresses:
-                        script_logger(data="{0} {1}: {2}".format(IFD, line.strip(), new_addresses), debug=debug,
-                                      indent=2)
-                        script_logger(message="interface: ", data=intf, debug=debug, indent=2)
-                        script_logger(message="IFD: ", data=IFD, debug=debug, indent=2)
-                        script_logger(message="IFL: ", data=IFL, debug=debug, indent=2)
+                    # if "vpnmonitor" in instance and "5.119.81.205/30" in new_addresses:
+                    #     script_logger(data="{0} {1}: {2}".format(IFD, line.strip(), new_addresses), debug=debug,
+                    #                   indent=2)
+                    #     script_logger(message="interface: ", data=intf, debug=debug, indent=2)
+                    #     script_logger(message="IFD: ", data=IFD, debug=debug, indent=2)
+                    #     script_logger(message="IFL: ", data=IFL, debug=debug, indent=2)
 
     if addresses:
 
@@ -212,8 +212,7 @@ for index, instance in enumerate(ri_vrfs):
         script_logger(message="*Current Instances is {0}".format(instance), debug=debug,
                       indent=0)
 
-    if instance == last_instance:
-        script_logger(message="*Current Instances is {0}".format(instance), debug=debug,
-                      indent=2)
-        pprint("Global Duplicates: {0}".format(
+script_logger(message="*Finding Global Instances", debug=debug, indent=0)
+
+pprint("Global Duplicates: {0}".format(
             [item for item, count in collections.Counter(all_addresses).items() if count > 1]))
